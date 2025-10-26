@@ -2,16 +2,30 @@
 
 // Node.js built-in modules
 declare module 'path' {
-  export = import('path');
+  export function join(...paths: string[]): string;
+  export function resolve(...pathSegments: string[]): string;
+  export function dirname(path: string): string;
+  export function basename(path: string, ext?: string): string;
+  export function extname(path: string): string;
+  export const sep: string;
 }
+
 declare module 'fs' {
-  export = import('fs');
+  export function existsSync(path: string): boolean;
+  export function mkdirSync(path: string, options?: any): void;
+  export function readFileSync(path: string, encoding?: string): string | Buffer;
+  export function writeFileSync(path: string, data: any, encoding?: string): void;
 }
+
 declare module 'os' {
-  export = import('os');
+  export function platform(): string;
+  export function arch(): string;
+  export function tmpdir(): string;
 }
+
 declare module 'crypto' {
-  export = import('crypto');
+  export function randomBytes(size: number): Buffer;
+  export function createHash(algorithm: string): any;
 }
 
 // Global Node.js variables
@@ -27,11 +41,22 @@ declare global {
   const clearTimeout: typeof global.clearTimeout;
   
   namespace NodeJS {
-    interface Process {
-      env: ProcessEnv;
-    }
     interface ProcessEnv {
       [key: string]: string | undefined;
+      NODE_ENV?: 'development' | 'production' | 'test';
+      PORT?: string;
+      DATABASE_URL?: string;
+      JWT_ACCESS_SECRET?: string;
+      JWT_REFRESH_SECRET?: string;
+      CORS_ORIGIN?: string;
+    }
+    
+    interface Process {
+      env: ProcessEnv;
+      exit(code?: number): never;
+      cwd(): string;
+      platform: string;
+      arch: string;
     }
   }
 }

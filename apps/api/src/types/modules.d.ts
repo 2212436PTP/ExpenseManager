@@ -1,12 +1,18 @@
 // Type declarations for missing modules
 
 declare module 'swagger-jsdoc' {
-  export default function swaggerJSDoc(options: any): any;
+  function swaggerJSDoc(options: any): any;
+  export default swaggerJSDoc;
 }
 
 declare module 'swagger-ui-express' {
   export function setup(swaggerDocument: any, options?: any): any;
   export function serve(...args: any[]): any;
+  const swaggerUi: {
+    setup: typeof setup;
+    serve: typeof serve;
+  };
+  export default swaggerUi;
 }
 
 declare module 'multer' {
@@ -25,7 +31,7 @@ declare module 'morgan' {
 
 declare module 'cors' {
   export interface CorsOptions {
-    origin?: boolean | string | RegExp | (string | RegExp)[] | ((origin: string, callback: (err: Error | null, allow?: boolean) => void) => void);
+    origin?: boolean | string | RegExp | (string | RegExp)[] | ((origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => void);
     methods?: string | string[];
     allowedHeaders?: string | string[];
     exposedHeaders?: string | string[];
@@ -36,7 +42,8 @@ declare module 'cors' {
   }
 
   function cors(options?: CorsOptions): any;
-  export = cors;
+  export default cors;
+  export { CorsOptions };
 }
 
 declare module 'express' {

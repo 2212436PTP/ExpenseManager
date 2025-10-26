@@ -1,4 +1,4 @@
-import { CorsOptions } from "cors";
+import cors, { CorsOptions } from "cors";
 
 // Default allowed origins for development
 const defaultOrigins = ["http://localhost:5173", "http://localhost:5174", "http://localhost:3000"];
