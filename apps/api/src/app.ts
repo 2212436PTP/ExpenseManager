@@ -19,6 +19,17 @@ app.use(express.json({ limit: "2mb" }));
 app.use(morgan("dev"));
 app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
+// Root route for basic health check
+app.get("/", (req, res) => {
+  res.json({ 
+    message: "Expense Manager API", 
+    status: "running",
+    version: "1.0.0",
+    docs: "/docs",
+    health: "/api/health"
+  });
+});
+
 app.use("/api", apiRouter);
 
 setupSwagger(app);

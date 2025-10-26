@@ -15,7 +15,10 @@ const options = {
   definition: {
     openapi: "3.0.0",
     info: { title: "Expense Manager API", version: "1.0.0", description: "API cho hệ thống quản lý chi tiêu" },
-    servers: [{ url: "http://localhost:4000/api" }],
+    servers: [
+      { url: "http://localhost:4000/api", description: "Development server" },
+      { url: "https://expense-manager-api-xy4b.onrender.com/api", description: "Production server" }
+    ],
     components: {
       securitySchemes: { BearerAuth: { type: "http", scheme: "bearer", bearerFormat: "JWT" } },
       schemas: {
