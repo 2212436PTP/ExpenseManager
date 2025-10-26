@@ -6,6 +6,13 @@
 [build.environment]
   NODE_VERSION = "18"
 
+# Force HTTPS redirect
+[[redirects]]
+  from = "http://expensemanager.id.vn/*"
+  to = "https://expensemanager.id.vn/:splat"
+  status = 301
+  force = true
+
 # Redirect rules for Single Page Application
 [[redirects]]
   from = "/*"
