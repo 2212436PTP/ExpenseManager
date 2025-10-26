@@ -19,6 +19,9 @@ app.use(express.json({ limit: "2mb" }));
 app.use(morgan("dev"));
 app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
+// Setup Swagger first
+setupSwagger(app);
+
 // Root route for basic health check
 app.get("/", (req, res) => {
   res.json({ 
@@ -31,8 +34,6 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api", apiRouter);
-
-setupSwagger(app);
 app.use(notFound);
 app.use(errorHandler);
 

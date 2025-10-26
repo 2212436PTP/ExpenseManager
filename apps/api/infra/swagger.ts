@@ -9,6 +9,8 @@ const CWD = process.cwd();
 const ROUTES_GLOBS = [
   posix(path.join(CWD, "src/routes/**/*.ts")),
   posix(path.join(CWD, "src/routes/**/*.js")),
+  posix(path.join(__dirname, "../src/routes/**/*.ts")),
+  posix(path.join(__dirname, "../src/routes/**/*.js")),
 ];
 
 const options = {
@@ -78,5 +80,24 @@ export function setupSwagger(app: Express) {
   console.log("[swagger] paths:", pathsCount);
 
   app.get("/docs-json", (_req, res) => res.json(spec));
-  app.use("/docs", swaggerUi.serve, swaggerUi.setup(spec));
+  
+  // Swagger UI setup with fallback
+  if (pathsCount > 0) {
+    app.use("/docs", swaggerUi.serve, swaggerUi.setup(spec));
+  } else {
+    // Fallback documentation page
+    app.get("/docs", (_req, res) => {
+      res.send(`
+        <html>
+          <head><title>API Documentation</title></head>
+          <body>
+            <h1>Expense Manager API</h1>
+            <p>API Documentation is currently being generated...</p>
+            <p><a href="/api/health">Health Check</a></p>
+            <p><a href="/docs-json">Raw OpenAPI Spec</a></p>
+          </body>
+        </html>
+      `);
+    });
+  }
 }
