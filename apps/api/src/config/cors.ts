@@ -1,7 +1,14 @@
 import cors, { CorsOptions } from "cors";
 
-// Default allowed origins for development
-const defaultOrigins = ["http://localhost:5173", "http://localhost:5174", "http://localhost:3000"];
+// Default allowed origins for development and production
+const defaultOrigins = [
+  "http://localhost:5173", 
+  "http://localhost:5174", 
+  "http://localhost:3000",
+  "https://expense-manager-frontend.netlify.app",
+  "https://expensemanager.id.vn",
+  "http://expensemanager.id.vn"
+];
 const envOrigins = (process.env.CORS_ORIGIN || "").split(",").map(s=>s.trim()).filter(Boolean);
 const whitelist = [...defaultOrigins, ...envOrigins];
 
