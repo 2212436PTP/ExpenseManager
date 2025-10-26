@@ -1,21 +1,40 @@
 /// <reference types="node" />
 
-// Node.js modules
-declare module 'path';
-declare module 'fs';
-declare module 'os';
-declare module 'crypto';
+// Node.js built-in modules
+declare module 'path' {
+  export = import('path');
+}
+declare module 'fs' {
+  export = import('fs');
+}
+declare module 'os' {
+  export = import('os');
+}
+declare module 'crypto' {
+  export = import('crypto');
+}
 
-// Ensure Node.js globals are available
-declare const console: Console;
-declare const process: NodeJS.Process;
-declare const __dirname: string;
-declare const __filename: string;
-declare const require: NodeRequire;
-declare const setInterval: typeof global.setInterval;
-declare const clearInterval: typeof global.clearInterval;
-declare const setTimeout: typeof global.setTimeout;
-declare const clearTimeout: typeof global.clearTimeout;
+// Global Node.js variables
+declare global {
+  const console: Console;
+  const process: NodeJS.Process;
+  const __dirname: string;
+  const __filename: string;
+  const require: NodeRequire;
+  const setInterval: typeof global.setInterval;
+  const clearInterval: typeof global.clearInterval;
+  const setTimeout: typeof global.setTimeout;
+  const clearTimeout: typeof global.clearTimeout;
+  
+  namespace NodeJS {
+    interface Process {
+      env: ProcessEnv;
+    }
+    interface ProcessEnv {
+      [key: string]: string | undefined;
+    }
+  }
+}
 
 declare global {
   namespace NodeJS {
