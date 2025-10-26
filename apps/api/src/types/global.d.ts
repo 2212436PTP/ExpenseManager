@@ -1,5 +1,13 @@
 /// <reference types="node" />
 
+// Ensure Node.js globals are available
+declare const console: Console;
+declare const process: NodeJS.Process;
+declare const __dirname: string;
+declare const __filename: string;
+declare const require: NodeRequire;
+declare const setInterval: typeof global.setInterval;
+
 declare global {
   namespace NodeJS {
     interface ProcessEnv {
