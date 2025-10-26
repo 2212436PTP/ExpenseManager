@@ -2,16 +2,13 @@ import helmet from "helmet";
 import cors from "cors";
 import rateLimit from "express-rate-limit";
 import { Express } from "express";
+import { corsOptions } from "../src/config/cors";
 
 export function applySecurity(app: Express) {
   app.use(helmet({ crossOriginResourcePolicy: { policy: "cross-origin" } }));
 
-  app.use(
-    cors({
-      origin: ["http://localhost:5173"], // thêm domain FE khi deploy
-      credentials: true,
-    })
-  );
+  // Use the proper CORS configuration from cors.ts
+  app.use(cors(corsOptions));
 
   app.use(
     rateLimit({
