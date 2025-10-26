@@ -9,8 +9,13 @@ const defaultOrigins = [
   "https://expensemanager.id.vn",
   "http://expensemanager.id.vn"
 ];
+
+// Get additional origins from environment
 const envOrigins = (process.env.CORS_ORIGIN || "").split(",").map(s=>s.trim()).filter(Boolean);
+console.log("🔧 [CORS] Environment origins:", envOrigins);
+
 const whitelist = [...defaultOrigins, ...envOrigins];
+console.log("🔧 [CORS] Final whitelist:", whitelist);
 
 export const corsOptions: CorsOptions = {
   origin: (origin, cb) => {
@@ -26,6 +31,12 @@ export const corsOptions: CorsOptions = {
     // Check if origin is in whitelist
     if (whitelist.includes(origin)) {
       console.log("✅ [CORS] Origin allowed:", origin);
+      return cb(null, true);
+    }
+    
+    // Fallback for production - allow if matches pattern
+    if (origin.includes('expensemanager.id.vn') || origin.includes('expense-manager-frontend.netlify.app')) {
+      console.log("✅ [CORS] Origin allowed by fallback pattern:", origin);
       return cb(null, true);
     }
     
