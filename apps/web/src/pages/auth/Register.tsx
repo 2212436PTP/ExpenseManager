@@ -17,7 +17,8 @@ export default function Register() {
 
     try {
       // Gọi API đăng ký thật
-      const response = await fetch('http://localhost:4000/api/auth/register', {
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
+      const response = await fetch(`${apiUrl}/auth/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
