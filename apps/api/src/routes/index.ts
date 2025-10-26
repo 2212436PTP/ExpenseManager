@@ -43,7 +43,9 @@ api.get("/health", (req, res) => {
 });
 
 api.use("/auth", auth);
-api.use("/seed", seed); // Seed routes (no auth required for setup)
+
+// Public routes (no auth required)
+api.use("/seed", seed); // Seed routes for database setup
 
 // Protect all routes below with authentication
 api.use(authRequired);
