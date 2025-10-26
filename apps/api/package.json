@@ -8,7 +8,8 @@
   "scripts": {
     "dev": "tsx watch src/server.ts",
     "build": "npx prisma generate && echo Build completed successfully",
-    "start": "npx prisma migrate deploy && npx prisma generate && tsx src/server.ts",
+    "start": "node debug-server.js",
+    "start:production": "npx prisma migrate deploy && npx prisma generate && tsx src/server.ts",
     "start:dev": "tsx src/server.ts",
     "prisma:migrate": "prisma migrate dev",
     "prisma:seed": "tsx prisma/seed.ts",
@@ -44,5 +45,8 @@
     "@types/swagger-ui-express": "^4.1.8",
     "prisma": "^6.16.3",
     "typescript": "^5.9.3"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
   }
 }
