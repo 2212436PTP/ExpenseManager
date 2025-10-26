@@ -75,29 +75,49 @@ const options = {
 const spec: any = swaggerJsdoc(options);
 
 export function setupSwagger(app: Express) {
-  const pathsCount = spec?.paths ? Object.keys(spec.paths).length : 0;
-  console.log("[swagger] globs:", ROUTES_GLOBS);
-  console.log("[swagger] paths:", pathsCount);
+  try {
+    const pathsCount = spec?.paths ? Object.keys(spec.paths).length : 0;
+    console.log("[swagger] globs:", ROUTES_GLOBS);
+    console.log("[swagger] paths:", pathsCount);
 
-  app.get("/docs-json", (_req, res) => res.json(spec));
-  
-  // Swagger UI setup with fallback
-  if (pathsCount > 0) {
-    app.use("/docs", swaggerUi.serve, swaggerUi.setup(spec));
-  } else {
-    // Fallback documentation page
-    app.get("/docs", (_req, res) => {
-      res.send(`
+    // Always provide raw spec endpoint (may be empty)
+    app.get("/docs-json", (_req, res) => res.json(spec ?? {}));
+
+    // If spec has paths, mount Swagger UI; otherwise serve a fallback page.
+    // Also ensure both '/docs' and '/docs/' are handled.
+    app.get("/docs", (req, res, next) => {
+      if (pathsCount > 0) return next();
+      res.type('html').send(`
         <html>
           <head><title>API Documentation</title></head>
-          <body>
+          <body style="font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;margin:32px;">
             <h1>Expense Manager API</h1>
-            <p>API Documentation is currently being generated...</p>
-            <p><a href="/api/health">Health Check</a></p>
-            <p><a href="/docs-json">Raw OpenAPI Spec</a></p>
+            <p>API Documentation is not available yet. You can use the raw OpenAPI spec or check health.</p>
+            <ul>
+              <li><a href="/api/health">Health Check</a></li>
+              <li><a href="/docs-json">Raw OpenAPI Spec</a></li>
+            </ul>
           </body>
         </html>
       `);
+    });
+
+    app.get("/docs/", (req, res, next) => {
+      // redirect to /docs so both variants work
+      res.redirect(302, '/docs');
+    });
+
+    if (pathsCount > 0) {
+      // mount swagger UI (this will handle assets and index)
+      app.use("/docs", swaggerUi.serve, swaggerUi.setup(spec));
+    }
+
+  } catch (err) {
+    console.error('[swagger] failed to setup swagger UI', err);
+    // Ensure docs endpoints exist even when an error occurs
+    app.get("/docs-json", (_req, res) => res.json({}));
+    app.get("/docs", (_req, res) => {
+      res.type('html').send(`<html><body><h1>Expense Manager API</h1><p>Documentation temporarily unavailable.</p><p><a href="/api/health">Health Check</a></p></body></html>`);
     });
   }
 }
