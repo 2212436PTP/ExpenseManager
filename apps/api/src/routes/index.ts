@@ -6,6 +6,7 @@ import transactions from "./transactions.routes";
 import reports from "./reports.routes";
 import users from "./users.routes";
 import userActivities from "./user-activities.routes";
+import seed from "./seed.routes";
 
 const api = Router();
 
@@ -42,6 +43,7 @@ api.get("/health", (req, res) => {
 });
 
 api.use("/auth", auth);
+api.use("/seed", seed); // Seed routes (no auth required for setup)
 
 // Protect all routes below with authentication
 api.use(authRequired);
