@@ -2,19 +2,37 @@
 
 // Node.js built-in modules
 declare module 'path' {
-  export function join(...paths: string[]): string;
-  export function resolve(...pathSegments: string[]): string;
-  export function dirname(path: string): string;
-  export function basename(path: string, ext?: string): string;
-  export function extname(path: string): string;
-  export const sep: string;
+  function join(...paths: string[]): string;
+  function resolve(...pathSegments: string[]): string;
+  function dirname(path: string): string;
+  function basename(path: string, ext?: string): string;
+  function extname(path: string): string;
+  const sep: string;
+  
+  const path: {
+    join: typeof join;
+    resolve: typeof resolve;
+    dirname: typeof dirname;
+    basename: typeof basename;
+    extname: typeof extname;
+    sep: typeof sep;
+  };
+  export default path;
 }
 
 declare module 'fs' {
-  export function existsSync(path: string): boolean;
-  export function mkdirSync(path: string, options?: any): void;
-  export function readFileSync(path: string, encoding?: string): string | Buffer;
-  export function writeFileSync(path: string, data: any, encoding?: string): void;
+  function existsSync(path: string): boolean;
+  function mkdirSync(path: string, options?: any): void;
+  function readFileSync(path: string, encoding?: string): string | Buffer;
+  function writeFileSync(path: string, data: any, encoding?: string): void;
+  
+  const fs: {
+    existsSync: typeof existsSync;
+    mkdirSync: typeof mkdirSync;
+    readFileSync: typeof readFileSync;
+    writeFileSync: typeof writeFileSync;
+  };
+  export default fs;
 }
 
 declare module 'os' {
@@ -57,6 +75,8 @@ declare global {
       cwd(): string;
       platform: string;
       arch: string;
+      uptime(): number;
+      on(event: string, listener: (...args: any[]) => void): this;
     }
   }
 }
