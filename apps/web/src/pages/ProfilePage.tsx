@@ -52,7 +52,10 @@ export const ProfilePage: React.FC = () => {
   };
 
   const handleAvatarChange = (newAvatarUrl: string | null) => {
+    console.log('Avatar changed to:', newAvatarUrl);
     updateAvatar(newAvatarUrl);
+    // Also refetch user data to ensure sync
+    refetch();
   };
 
   if (isLoading) {

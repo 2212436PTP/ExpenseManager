@@ -60,8 +60,12 @@ export const AvatarUpload: React.FC<AvatarUploadProps> = ({
       }
 
       const result = await response.json();
+      console.log('Avatar upload response:', result);
       onAvatarChange(result.avatarUrl);
       setPreviewUrl(null);
+      
+      // Show success message
+      alert('Upload ảnh thành công!');
     } catch (error) {
       console.error('Upload error:', error);
       alert(error instanceof Error ? error.message : 'Có lỗi khi upload ảnh');
