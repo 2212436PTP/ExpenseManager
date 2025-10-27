@@ -17,7 +17,7 @@ testDatabaseConnection();
 applySecurity(app);
 app.use(express.json({ limit: "2mb" }));
 app.use(morgan("dev"));
-app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
+app.use("/uploads", express.static(path.join(__dirname, "../../uploads")));
 
 // Setup Swagger first
 setupSwagger(app);
