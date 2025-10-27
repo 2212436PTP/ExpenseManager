@@ -2,9 +2,14 @@ import { Link } from 'react-router-dom';
 import { useAppSelector } from '../../store/hooks';
 import { selectUser } from '../../features/auth/auth.slice';
 import { UserDropdown } from '../UserDropdown';
+import { useUserProfile } from '../../hooks/useUserProfile';
 
 export default function Header() {
-  const me = useAppSelector(selectUser);
+  const reduxUser = useAppSelector(selectUser);
+  const { user: profileUser } = useUserProfile();
+  
+  // Use profile user data if available (has updated avatarUrl), otherwise fallback to redux
+  const me = profileUser || reduxUser;
 
   return (
     <header style={{
