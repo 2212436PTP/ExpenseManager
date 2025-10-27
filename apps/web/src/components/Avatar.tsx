@@ -26,9 +26,7 @@ export const Avatar: React.FC<AvatarProps> = ({
 }) => {
   const sizeClass = sizeClasses[size];
 
-  console.log('Avatar component received src:', src);
   const avatarSrc = getAvatarUrl(src || null);
-  console.log('Avatar component avatarSrc after getAvatarUrl:', avatarSrc);
 
   return (
     <div className={`${sizeClass} rounded-full overflow-hidden bg-gray-200 flex items-center justify-center ${className}`}>
@@ -37,12 +35,11 @@ export const Avatar: React.FC<AvatarProps> = ({
           src={avatarSrc}
           alt={alt}
           className="w-full h-full object-cover"
-          onError={(e) => {
+          onError={() => {
             console.error('Avatar image failed to load:', avatarSrc);
-            console.error('Error event:', e);
           }}
           onLoad={() => {
-            console.log('Avatar image loaded successfully:', avatarSrc);
+            console.log('Avatar image loaded successfully');
           }}
         />
       ) : (

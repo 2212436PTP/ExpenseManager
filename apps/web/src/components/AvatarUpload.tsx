@@ -4,44 +4,59 @@ import { getApiUrl, getAuthHeaders, getAvatarUrl } from '../utils/api';
 
 // Function to resize image
 const resizeImage = (file: File, maxWidth: number = 300, maxHeight: number = 300, quality: number = 0.8): Promise<File> => {
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d')!;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) {
+      reject(new Error('Could not get canvas context'));
+      return;
+    }
+    
     const img = new Image();
     
     img.onload = () => {
-      // Calculate new dimensions
-      let { width, height } = img;
-      
-      if (width > height) {
-        if (width > maxWidth) {
-          height = (height * maxWidth) / width;
-          width = maxWidth;
+      try {
+        // Calculate new dimensions
+        let { width, height } = img;
+        
+        if (width > height) {
+          if (width > maxWidth) {
+            height = (height * maxWidth) / width;
+            width = maxWidth;
+          }
+        } else {
+          if (height > maxHeight) {
+            width = (width * maxHeight) / height;
+            height = maxHeight;
+          }
         }
-      } else {
-        if (height > maxHeight) {
-          width = (width * maxHeight) / height;
-          height = maxHeight;
-        }
+        
+        // Set canvas dimensions
+        canvas.width = width;
+        canvas.height = height;
+        
+        // Draw and resize image
+        ctx.drawImage(img, 0, 0, width, height);
+        
+        // Convert canvas to blob
+        canvas.toBlob((blob) => {
+          if (blob) {
+            const resizedFile = new File([blob], file.name, {
+              type: file.type,
+              lastModified: Date.now()
+            });
+            resolve(resizedFile);
+          } else {
+            reject(new Error('Failed to create blob'));
+          }
+        }, file.type, quality);
+      } catch (error) {
+        reject(error);
       }
-      
-      // Set canvas dimensions
-      canvas.width = width;
-      canvas.height = height;
-      
-      // Draw and resize image
-      ctx.drawImage(img, 0, 0, width, height);
-      
-      // Convert canvas to blob
-      canvas.toBlob((blob) => {
-        if (blob) {
-          const resizedFile = new File([blob], file.name, {
-            type: file.type,
-            lastModified: Date.now()
-          });
-          resolve(resizedFile);
-        }
-      }, file.type, quality);
+    };
+    
+    img.onerror = () => {
+      reject(new Error('Failed to load image'));
     };
     
     img.src = URL.createObjectURL(file);
@@ -82,19 +97,26 @@ export const AvatarUpload: React.FC<AvatarUploadProps> = ({
     setUploading(true);
     
     try {
-      // Resize image before upload
-      const resizedFile = await resizeImage(file, 300, 300, 0.8);
+      // Try to resize image, fallback to original if failed
+      let fileToUpload = file;
+      try {
+        fileToUpload = await resizeImage(file, 300, 300, 0.8);
+        console.log('Image resized successfully');
+      } catch (resizeError) {
+        console.warn('Failed to resize image, using original:', resizeError);
+        fileToUpload = file;
+      }
       
       // Show preview
       const reader = new FileReader();
       reader.onload = (e) => {
         setPreviewUrl(e.target?.result as string);
       };
-      reader.readAsDataURL(resizedFile);
+      reader.readAsDataURL(fileToUpload);
 
-      // Upload resized file
+      // Upload file
       const formData = new FormData();
-      formData.append('avatar', resizedFile);
+      formData.append('avatar', fileToUpload);
 
       const response = await fetch(getApiUrl('/api/users/avatar'), {
         method: 'POST',
