@@ -52,15 +52,15 @@ export const UserDropdown: React.FC<UserDropdownProps> = ({ user }) => {
       {/* User Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center space-x-2 p-1 rounded-lg hover:bg-gray-100 transition-colors"
+        className="flex items-center p-1 rounded-lg hover:bg-gray-100 transition-colors"
       >
         <div 
           className="rounded-full overflow-hidden bg-gray-100 flex items-center justify-center ring-1 ring-gray-300 shadow-sm"
           style={{ 
-            width: '8px', 
-            height: '8px',
-            minWidth: '8px',
-            minHeight: '8px'
+            width: '20px', 
+            height: '20px',
+            minWidth: '20px',
+            minHeight: '20px'
           }}
         >
           {getAvatarUrl(user.avatarUrl || null) ? (
@@ -68,22 +68,19 @@ export const UserDropdown: React.FC<UserDropdownProps> = ({ user }) => {
               src={getAvatarUrl(user.avatarUrl || null) || ''}
               alt={user.fullName}
               className="w-full h-full object-cover rounded-full"
+              style={{ width: '20px', height: '20px' }}
             />
           ) : (
             <div className="flex items-center justify-center text-gray-500 w-full h-full">
-              <span className="font-semibold" style={{ fontSize: '4px' }}>
+              <span className="font-semibold" style={{ fontSize: '10px' }}>
                 {user.fullName.charAt(0).toUpperCase()}
               </span>
             </div>
           )}
         </div>
-        <div className="hidden md:flex flex-col text-left">
-          <span className="text-sm font-medium text-gray-900 truncate max-w-32">{user.fullName}</span>
-          <span className="text-xs text-gray-500">{user.role === 'ADMIN' ? 'Quản trị viên' : 'Người dùng'}</span>
-        </div>
         <ChevronDown 
-          size={12} 
-          className={`text-gray-400 transition-transform ${isOpen ? 'rotate-180' : ''}`}
+          size={10} 
+          className={`text-gray-400 transition-transform ${isOpen ? 'rotate-180' : ''} ml-1`}
         />
       </button>
 
@@ -94,7 +91,7 @@ export const UserDropdown: React.FC<UserDropdownProps> = ({ user }) => {
           <div className="px-4 py-3 border-b border-gray-100">
             <div className="text-center">
               <div className="font-medium text-gray-900">{user.fullName}</div>
-              <div className="text-sm text-gray-500">{user.email}</div>
+              <div className="text-sm text-gray-500">{user.role === 'ADMIN' ? 'Quản trị viên' : 'Người dùng'}</div>
             </div>
           </div>
 
