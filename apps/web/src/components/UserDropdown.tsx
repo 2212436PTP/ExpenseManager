@@ -52,17 +52,18 @@ export const UserDropdown: React.FC<UserDropdownProps> = ({ user }) => {
       {/* User Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 transition-colors"
+        className="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 transition-colors"
       >
         <Avatar 
           src={user.avatarUrl}
           alt={user.fullName}
-          size="md"
+          size="sm"
           fallbackText={user.fullName}
+          className="ring-2 ring-white shadow-sm"
         />
-        <div className="hidden md:block text-left">
-          <div className="text-sm font-medium text-gray-900">{user.fullName}</div>
-          <div className="text-xs text-gray-500">{user.role === 'ADMIN' ? 'Quản trị viên' : 'Người dùng'}</div>
+        <div className="hidden md:flex flex-col text-left">
+          <span className="text-sm font-medium text-gray-900 truncate max-w-32">{user.fullName}</span>
+          <span className="text-xs text-gray-500">{user.role === 'ADMIN' ? 'Quản trị viên' : 'Người dùng'}</span>
         </div>
         <ChevronDown 
           size={16} 
