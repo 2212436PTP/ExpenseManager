@@ -4,6 +4,7 @@ import { allow } from "../middlewares/rbac";
 import { upload } from "../../infra/upload";
 import { prisma } from "../services/database.service";
 import { getAllUsers, getUserLastActivity } from "../controllers/auth.controller";
+import avatarRoutes from "./avatar.routes";
 
 // Activity tracking storage
 let userActivities: any[] = [];
@@ -48,6 +49,7 @@ r.get("/me", authRequired, async (req, res) => {
         id: true,
         email: true,
         fullName: true,
+        avatarUrl: true,
         role: true,
         createdAt: true,
         updatedAt: true
@@ -63,12 +65,79 @@ r.get("/me", authRequired, async (req, res) => {
       email: user.email,
       fullName: user.fullName,
       role: user.role,
-      avatarUrl: null,
+      avatarUrl: user.avatarUrl,
       createdAt: user.createdAt.toISOString()
     });
   } catch (error) {
     console.error('Error fetching user profile:', error);
     res.status(500).json({ error: 'Failed to fetch user profile' });
+  }
+});
+
+/**
+ * @swagger
+ * /users/me:
+ *   put:
+ *     summary: Cập nhật thông tin người dùng hiện tại
+ *     tags: [Users]
+ *     security: [{ BearerAuth: [] }]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               fullName:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *     responses:
+ *       200: { description: OK }
+ */
+r.put("/me", authRequired, async (req, res) => {
+  const userId = (req as any).user.userId as string;
+  const { fullName, email } = req.body;
+  
+  try {
+    // Validate input
+    if (!fullName || !email) {
+      return res.status(400).json({ error: 'Full name and email are required' });
+    }
+
+    // Check if email is already taken by another user
+    const existingUser = await prisma.user.findFirst({
+      where: {
+        email,
+        id: { not: userId }
+      }
+    });
+
+    if (existingUser) {
+      return res.status(400).json({ error: 'Email đã được sử dụng bởi tài khoản khác' });
+    }
+
+    const updatedUser = await prisma.user.update({
+      where: { id: userId },
+      data: { fullName, email },
+      select: {
+        id: true,
+        email: true,
+        fullName: true,
+        avatarUrl: true,
+        role: true,
+        createdAt: true,
+        updatedAt: true
+      }
+    });
+
+    // Log activity
+    logActivity(userId, 'profile-update', `Cập nhật thông tin cá nhân`);
+
+    res.json(updatedUser);
+  } catch (error) {
+    console.error('Error updating profile:', error);
+    res.status(500).json({ error: 'Failed to update profile' });
   }
 });
 
@@ -90,8 +159,29 @@ r.get("/me", authRequired, async (req, res) => {
  *       200: { description: OK }
  */
 r.post("/me/avatar", authRequired, upload.single("file"), async (req, res) => {
-  const url = `/uploads/${req.file?.filename}`;
-  res.json({ avatarUrl: url });
+  const userId = (req as any).user.userId as string;
+  
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: 'No file uploaded' });
+    }
+
+    const avatarUrl = `/uploads/${req.file.filename}`;
+    
+    // Update user's avatarUrl in database
+    await prisma.user.update({
+      where: { id: userId },
+      data: { avatarUrl }
+    });
+
+    // Log activity
+    logActivity(userId, 'avatar-upload', 'Cập nhật ảnh đại diện');
+
+    res.json({ avatarUrl });
+  } catch (error) {
+    console.error('Error uploading avatar:', error);
+    res.status(500).json({ error: 'Failed to upload avatar' });
+  }
 });
 
 // Admin-only routes for user management
@@ -293,5 +383,8 @@ r.delete("/:id", authRequired, allow('ADMIN'), async (req, res) => {
     res.status(500).json({ error: 'Có lỗi khi xóa người dùng' });
   }
 });
+
+// Avatar routes
+r.use(avatarRoutes);
 
 export default r;
