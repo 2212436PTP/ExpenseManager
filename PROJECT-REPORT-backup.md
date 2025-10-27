@@ -1,7 +1,7 @@
 # 📊 BÁO CÁO ĐỒ ÁN CUỐI KỲ
 ## HỆ THỐNG QUẢN LÝ CHI TIÊU CÁ NHÂN (EXPENSE MANAGER)
 
-**Sinh viên thực hiện:** Phạm Thành Phát  
+**Sinh viên thực hiện:** Phan Thành Phát  
 **MSSV:** 2212436  
 **Lớp:** PTP  
 **Môn học:** Phát triển ứng dụng Web  

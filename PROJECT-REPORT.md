@@ -938,7 +938,7 @@ Cảm ơn **gia đình và bạn bè** đã luôn tin tưởng và động viên
 
 ---
 
-**📊 Báo cáo được tạo bởi:** Phạm Thành Phát (2212436)  
+**📊 Báo cáo được tạo bởi:** Phan Thành Phát (2212436)  
 **📅 Ngày hoàn thành:** Tháng 10/2025  
 **🔗 Repository:** [https://github.com/2212436PTP/ExpenseManager](https://github.com/2212436PTP/ExpenseManager)  
 **🌐 Live Demo:** [https://expense-manager-frontend.netlify.app](https://expense-manager-frontend.netlify.app)
