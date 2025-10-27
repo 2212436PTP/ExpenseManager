@@ -5,6 +5,7 @@ import Accounts from '@/pages/Accounts';
 import Transactions from '@/pages/Transactions';
 import Reports from '@/pages/Reports';
 import UsersManagement from '@/pages/UsersManagement';
+import { ProfilePage } from '@/pages/ProfilePage';
 import Login from '@/pages/auth/Login';
 import Register from '@/pages/auth/Register';
 import RequireAuth from '@/features/auth/RequireAuth';
@@ -20,7 +21,8 @@ const router = createBrowserRouter([
       { path: 'accounts', element: <RequireAuth><Accounts /></RequireAuth> },
       { path: 'transactions', element: <RequireAuth><Transactions /></RequireAuth> },
       { path: 'reports', element: <RequireAuth><Reports /></RequireAuth> },
-      { path: 'users', element: <RequireAuth><UsersManagement /></RequireAuth> }
+      { path: 'users', element: <RequireAuth><UsersManagement /></RequireAuth> },
+      { path: 'profile', element: <RequireAuth><ProfilePage /></RequireAuth> }
     ]
   },
   { path: '*', element: <Navigate to="/" /> }
