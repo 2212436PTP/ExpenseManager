@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { Camera, Trash2, Upload } from 'lucide-react';
+import { getApiUrl, getAuthHeaders } from '../utils/api';
 
 interface AvatarUploadProps {
   currentAvatarUrl?: string | null;
@@ -45,11 +46,10 @@ export const AvatarUpload: React.FC<AvatarUploadProps> = ({
       const formData = new FormData();
       formData.append('avatar', file);
 
-      const token = localStorage.getItem('accessToken');
-      const response = await fetch('/api/users/avatar', {
+      const response = await fetch(getApiUrl('/api/users/avatar'), {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${token}`
+          ...getAuthHeaders()
         },
         body: formData
       });
@@ -82,11 +82,10 @@ export const AvatarUpload: React.FC<AvatarUploadProps> = ({
 
     setUploading(true);
     try {
-      const token = localStorage.getItem('accessToken');
-      const response = await fetch('/api/users/avatar', {
+      const response = await fetch(getApiUrl('/api/users/avatar'), {
         method: 'DELETE',
         headers: {
-          'Authorization': `Bearer ${token}`,
+          ...getAuthHeaders(),
           'Content-Type': 'application/json'
         }
       });

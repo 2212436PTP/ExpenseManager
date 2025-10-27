@@ -1,63 +1,38 @@
 import React, { useState, useEffect } from 'react';
 import { Save, User, Mail } from 'lucide-react';
 import { AvatarUpload } from '../components/AvatarUpload';
-
-interface UserProfile {
-  id: string;
-  email: string;
-  fullName: string;
-  avatarUrl?: string | null;
-  role: string;
-  createdAt: string;
-}
+import { useUserProfile } from '../hooks/useUserProfile';
+import { getApiUrl, getAuthHeaders } from '../utils/api';
 
 export const ProfilePage: React.FC = () => {
-  const [user, setUser] = useState<UserProfile | null>(null);
-  const [formData, setFormData] = useState({
+  const { user, loading: isLoading, updateAvatar, updateProfile, refetch } = useUserProfile();
+  const [formData, setFormData] = useState<{
+    fullName: string;
+    email: string;
+  }>({
     fullName: '',
     email: ''
   });
-  const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
-    loadUserProfile();
-  }, []);
-
-  const loadUserProfile = async () => {
-    try {
-      const token = localStorage.getItem('accessToken');
-      const response = await fetch('/api/users/me', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-
-      if (!response.ok) throw new Error('Failed to load profile');
-
-      const userData = await response.json();
-      setUser(userData);
+    if (user) {
       setFormData({
-        fullName: userData.fullName,
-        email: userData.email
+        fullName: user.fullName,
+        email: user.email
       });
-    } catch (error) {
-      console.error('Error loading profile:', error);
-    } finally {
-      setIsLoading(false);
     }
-  };
+  }, [user]);
 
   const handleSaveProfile = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSaving(true);
 
     try {
-      const token = localStorage.getItem('accessToken');
-      const response = await fetch('/api/users/me', {
+      const response = await fetch(getApiUrl('/api/users/me'), {
         method: 'PUT',
         headers: {
-          'Authorization': `Bearer ${token}`,
+          ...getAuthHeaders(),
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(formData)
@@ -66,7 +41,7 @@ export const ProfilePage: React.FC = () => {
       if (!response.ok) throw new Error('Failed to update profile');
 
       const updatedUser = await response.json();
-      setUser(updatedUser);
+      updateProfile(updatedUser);
       alert('Cập nhật thông tin thành công!');
     } catch (error) {
       console.error('Error updating profile:', error);
@@ -77,9 +52,7 @@ export const ProfilePage: React.FC = () => {
   };
 
   const handleAvatarChange = (newAvatarUrl: string | null) => {
-    if (user) {
-      setUser({ ...user, avatarUrl: newAvatarUrl });
-    }
+    updateAvatar(newAvatarUrl);
   };
 
   if (isLoading) {
@@ -96,7 +69,7 @@ export const ProfilePage: React.FC = () => {
         <div className="text-center">
           <h2 className="text-xl font-semibold text-gray-700">Không thể tải thông tin người dùng</h2>
           <button
-            onClick={loadUserProfile}
+            onClick={refetch}
             className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
           >
             Thử lại
