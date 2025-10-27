@@ -15,10 +15,19 @@ export function getAuthHeaders(): Record<string, string> {
 export function getAvatarUrl(avatarPath: string | null): string | null {
   if (!avatarPath) return null;
   
+  console.log('getAvatarUrl input:', avatarPath);
+  console.log('API_BASE_URL:', API_BASE_URL);
+  
   // If it's already a full URL, return as is
-  if (avatarPath.startsWith('http')) return avatarPath;
+  if (avatarPath.startsWith('http')) {
+    console.log('Already full URL, returning:', avatarPath);
+    return avatarPath;
+  }
   
   // If it's a relative path like '/uploads/filename.jpg'
   const baseUrl = API_BASE_URL.replace('/api', ''); // Remove /api suffix
-  return `${baseUrl}${avatarPath}`;
+  const fullUrl = `${baseUrl}${avatarPath}`;
+  
+  console.log('Generated avatar URL:', fullUrl);
+  return fullUrl;
 }

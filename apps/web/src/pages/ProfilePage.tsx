@@ -53,7 +53,9 @@ export const ProfilePage: React.FC = () => {
 
   const handleAvatarChange = (newAvatarUrl: string | null) => {
     console.log('Avatar changed to:', newAvatarUrl);
+    console.log('Current user before update:', user);
     updateAvatar(newAvatarUrl);
+    console.log('User after updateAvatar:', user);
     // Also refetch user data to ensure sync
     refetch();
   };
