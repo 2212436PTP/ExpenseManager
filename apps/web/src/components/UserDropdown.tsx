@@ -54,7 +54,7 @@ export const UserDropdown: React.FC<UserDropdownProps> = ({ user }) => {
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center space-x-2 p-1 rounded-lg hover:bg-gray-100 transition-colors"
       >
-        <div style={{ width: '7px', height: '7px' }} className="rounded-full overflow-hidden bg-gray-100 flex items-center justify-center ring-1 ring-gray-300 shadow-sm">
+        <div className="w-4 h-4 rounded-full overflow-hidden bg-gray-100 flex items-center justify-center ring-1 ring-gray-300 shadow-sm">
           {getAvatarUrl(user.avatarUrl || null) ? (
             <img
               src={getAvatarUrl(user.avatarUrl || null) || ''}
@@ -63,7 +63,7 @@ export const UserDropdown: React.FC<UserDropdownProps> = ({ user }) => {
             />
           ) : (
             <div className="flex items-center justify-center text-gray-500">
-              <span className="font-semibold" style={{ fontSize: '4px' }}>
+              <span className="font-semibold" style={{ fontSize: '8px' }}>
                 {user.fullName.charAt(0).toUpperCase()}
               </span>
             </div>
