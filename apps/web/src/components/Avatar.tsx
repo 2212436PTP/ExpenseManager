@@ -5,12 +5,13 @@ import { getAvatarUrl } from '../utils/api';
 interface AvatarProps {
   src?: string | null;
   alt?: string;
-  size?: 'sm' | 'md' | 'lg' | 'xl';
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
   fallbackText?: string;
   className?: string;
 }
 
 const sizeClasses = {
+  xs: 'w-4 h-4 text-xs',
   sm: 'w-8 h-8 text-xs',
   md: 'w-12 h-12 text-sm', 
   lg: 'w-16 h-16 text-base',
@@ -49,7 +50,7 @@ export const Avatar: React.FC<AvatarProps> = ({
               {fallbackText.charAt(0).toUpperCase()}
             </span>
           ) : (
-            <User size={size === 'sm' ? 16 : size === 'md' ? 20 : size === 'lg' ? 24 : 28} />
+            <User size={size === 'xs' ? 8 : size === 'sm' ? 16 : size === 'md' ? 20 : size === 'lg' ? 24 : 28} />
           )}
         </div>
       )}

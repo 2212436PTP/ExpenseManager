@@ -3,7 +3,7 @@ import { Camera } from 'lucide-react';
 import { getApiUrl, getAuthHeaders, getAvatarUrl } from '../utils/api';
 
 // Function to resize image
-const resizeImage = (file: File, maxWidth: number = 300, maxHeight: number = 300, quality: number = 0.8): Promise<File> => {
+const resizeImage = (file: File, maxWidth: number = 150, maxHeight: number = 150, quality: number = 0.8): Promise<File> => {
   return new Promise((resolve, reject) => {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
@@ -100,7 +100,7 @@ export const AvatarUpload: React.FC<AvatarUploadProps> = ({
       // Try to resize image, fallback to original if failed
       let fileToUpload = file;
       try {
-        fileToUpload = await resizeImage(file, 300, 300, 0.8);
+        fileToUpload = await resizeImage(file, 150, 150, 0.8);
         console.log('Image resized successfully');
       } catch (resizeError) {
         console.warn('Failed to resize image, using original:', resizeError);
@@ -161,7 +161,7 @@ export const AvatarUpload: React.FC<AvatarUploadProps> = ({
         className="relative cursor-pointer group"
         onClick={() => fileInputRef.current?.click()}
       >
-        <div className="w-32 h-32 rounded-full overflow-hidden bg-gray-200 border-4 border-white shadow-lg">
+        <div className="w-20 h-20 rounded-full overflow-hidden bg-gray-200 border-4 border-white shadow-lg">
           {displayUrl ? (
             <img
               src={displayUrl}
@@ -170,7 +170,7 @@ export const AvatarUpload: React.FC<AvatarUploadProps> = ({
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center text-gray-400">
-              <Camera size={40} />
+              <Camera size={24} />
             </div>
           )}
         </div>
@@ -178,14 +178,14 @@ export const AvatarUpload: React.FC<AvatarUploadProps> = ({
         {/* Loading overlay */}
         {(uploading || isLoading) && (
           <div className="absolute inset-0 bg-black bg-opacity-50 rounded-full flex items-center justify-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
           </div>
         )}
 
         {/* Hover overlay for existing avatar */}
         {displayUrl && !uploading && !isLoading && (
           <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 rounded-full flex items-center justify-center transition-all duration-200">
-            <Camera size={24} className="text-white opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
+            <Camera size={20} className="text-white opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
           </div>
         )}
       </div>

@@ -1,10 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ChevronDown, User, LogOut } from 'lucide-react';
-import { Avatar } from './Avatar';
 import { useAppDispatch } from '../store/hooks';
 import { logout } from '../features/auth/auth.slice';
 import { useLogoutMutation } from '../api/auth.api';
+import { getAvatarUrl } from '../utils/api';
 
 interface UserDropdownProps {
   user: {
@@ -52,21 +52,29 @@ export const UserDropdown: React.FC<UserDropdownProps> = ({ user }) => {
       {/* User Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 transition-colors"
+        className="flex items-center space-x-2 p-1 rounded-lg hover:bg-gray-100 transition-colors"
       >
-        <Avatar 
-          src={user.avatarUrl}
-          alt={user.fullName}
-          size="sm"
-          fallbackText={user.fullName}
-          className="ring-2 ring-white shadow-sm"
-        />
+        <div style={{ width: '7px', height: '7px' }} className="rounded-full overflow-hidden bg-gray-100 flex items-center justify-center ring-1 ring-gray-300 shadow-sm">
+          {getAvatarUrl(user.avatarUrl || null) ? (
+            <img
+              src={getAvatarUrl(user.avatarUrl || null) || ''}
+              alt={user.fullName}
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <div className="flex items-center justify-center text-gray-500">
+              <span className="font-semibold" style={{ fontSize: '4px' }}>
+                {user.fullName.charAt(0).toUpperCase()}
+              </span>
+            </div>
+          )}
+        </div>
         <div className="hidden md:flex flex-col text-left">
           <span className="text-sm font-medium text-gray-900 truncate max-w-32">{user.fullName}</span>
           <span className="text-xs text-gray-500">{user.role === 'ADMIN' ? 'Quản trị viên' : 'Người dùng'}</span>
         </div>
         <ChevronDown 
-          size={16} 
+          size={12} 
           className={`text-gray-400 transition-transform ${isOpen ? 'rotate-180' : ''}`}
         />
       </button>
@@ -76,17 +84,9 @@ export const UserDropdown: React.FC<UserDropdownProps> = ({ user }) => {
         <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50">
           {/* User Info */}
           <div className="px-4 py-3 border-b border-gray-100">
-            <div className="flex items-center space-x-3">
-              <Avatar 
-                src={user.avatarUrl}
-                alt={user.fullName}
-                size="md"
-                fallbackText={user.fullName}
-              />
-              <div>
-                <div className="font-medium text-gray-900">{user.fullName}</div>
-                <div className="text-sm text-gray-500">{user.email}</div>
-              </div>
+            <div className="text-center">
+              <div className="font-medium text-gray-900">{user.fullName}</div>
+              <div className="text-sm text-gray-500">{user.email}</div>
             </div>
           </div>
 
