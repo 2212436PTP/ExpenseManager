@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
-import { Camera, Trash2, Upload } from 'lucide-react';
-import { getApiUrl, getAuthHeaders } from '../utils/api';
+import { Camera } from 'lucide-react';
+import { getApiUrl, getAuthHeaders, getAvatarUrl } from '../utils/api';
 
 interface AvatarUploadProps {
   currentAvatarUrl?: string | null;
@@ -74,42 +74,17 @@ export const AvatarUpload: React.FC<AvatarUploadProps> = ({
     }
   };
 
-  const handleDeleteAvatar = async () => {
-    if (!currentAvatarUrl) return;
 
-    const confirmDelete = window.confirm('Bạn có chắc muốn xóa ảnh đại diện?');
-    if (!confirmDelete) return;
 
-    setUploading(true);
-    try {
-      const response = await fetch(getApiUrl('/api/users/avatar'), {
-        method: 'DELETE',
-        headers: {
-          ...getAuthHeaders(),
-          'Content-Type': 'application/json'
-        }
-      });
-
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || 'Delete failed');
-      }
-
-      onAvatarChange(null);
-    } catch (error) {
-      console.error('Delete error:', error);
-      alert(error instanceof Error ? error.message : 'Có lỗi khi xóa ảnh');
-    } finally {
-      setUploading(false);
-    }
-  };
-
-  const displayUrl = previewUrl || currentAvatarUrl;
+  const displayUrl = previewUrl || getAvatarUrl(currentAvatarUrl || null);
 
   return (
     <div className="flex flex-col items-center space-y-4">
-      {/* Avatar Display */}
-      <div className="relative">
+      {/* Avatar Display - Clickable */}
+      <div 
+        className="relative cursor-pointer group"
+        onClick={() => fileInputRef.current?.click()}
+      >
         <div className="w-32 h-32 rounded-full overflow-hidden bg-gray-200 border-4 border-white shadow-lg">
           {displayUrl ? (
             <img
@@ -130,29 +105,20 @@ export const AvatarUpload: React.FC<AvatarUploadProps> = ({
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
           </div>
         )}
+
+        {/* Hover overlay for existing avatar */}
+        {displayUrl && !uploading && !isLoading && (
+          <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 rounded-full flex items-center justify-center transition-all duration-200">
+            <Camera size={24} className="text-white opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
+          </div>
+        )}
       </div>
 
-      {/* Action Buttons */}
-      <div className="flex space-x-3">
-        <button
-          onClick={() => fileInputRef.current?.click()}
-          disabled={uploading || isLoading}
-          className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-        >
-          <Upload size={16} className="mr-2" />
-          {currentAvatarUrl ? 'Đổi ảnh' : 'Tải ảnh lên'}
-        </button>
-
-        {currentAvatarUrl && (
-          <button
-            onClick={handleDeleteAvatar}
-            disabled={uploading || isLoading}
-            className="flex items-center px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          >
-            <Trash2 size={16} className="mr-2" />
-            Xóa ảnh
-          </button>
-        )}
+      {/* Upload instructions */}
+      <div className="text-center">
+        <p className="text-sm text-gray-600">
+          {displayUrl ? 'Click ảnh để thay đổi' : 'Click để tải ảnh lên'}
+        </p>
       </div>
 
       {/* Hidden file input */}

@@ -1,5 +1,6 @@
 import React from 'react';
 import { User } from 'lucide-react';
+import { getAvatarUrl } from '../utils/api';
 
 interface AvatarProps {
   src?: string | null;
@@ -25,11 +26,13 @@ export const Avatar: React.FC<AvatarProps> = ({
 }) => {
   const sizeClass = sizeClasses[size];
 
+  const avatarSrc = getAvatarUrl(src || null);
+
   return (
     <div className={`${sizeClass} rounded-full overflow-hidden bg-gray-200 flex items-center justify-center ${className}`}>
-      {src ? (
+      {avatarSrc ? (
         <img
-          src={src}
+          src={avatarSrc}
           alt={alt}
           className="w-full h-full object-cover"
         />

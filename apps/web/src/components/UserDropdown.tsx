@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ChevronDown, User, Settings, LogOut } from 'lucide-react';
+import { ChevronDown, User, LogOut } from 'lucide-react';
 import { Avatar } from './Avatar';
 import { useAppDispatch } from '../store/hooks';
 import { logout } from '../features/auth/auth.slice';
@@ -99,26 +99,6 @@ export const UserDropdown: React.FC<UserDropdownProps> = ({ user }) => {
               <User size={16} className="mr-3 text-gray-400" />
               Thông tin cá nhân
             </Link>
-
-            <Link
-              to="/settings"
-              onClick={() => setIsOpen(false)}
-              className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
-            >
-              <Settings size={16} className="mr-3 text-gray-400" />
-              Cài đặt
-            </Link>
-
-            {user.role === 'ADMIN' && (
-              <Link
-                to="/admin"
-                onClick={() => setIsOpen(false)}
-                className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
-              >
-                <Settings size={16} className="mr-3 text-gray-400" />
-                Quản lý hệ thống
-              </Link>
-            )}
 
             <hr className="my-1" />
 
