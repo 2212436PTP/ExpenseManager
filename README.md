@@ -2,7 +2,7 @@
 
 Ứng dụng quản lý chi tiêu cá nhân full-stack (React + Node.js + PostgreSQL).
 
-> Báo cáo đầy đủ theo cấu trúc 7 mục: xem `PROJECT-REPORT-FINAL.md`.
+
 
 ## ⚡ Mô tả ngắn & tính năng chính
 
